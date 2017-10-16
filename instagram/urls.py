@@ -36,15 +36,21 @@ router.register(r'event', event_view.EventViewSet)
 
 
 urlpatterns = [
+    url(r'index/', core_views.IndexView.as_view()),
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include(router.urls)),
+    url(r'^api/v1/', include(router.urls)),
     url(r'^api-token-auth/', views.obtain_auth_token),
     url(r'^social/', include('social_django.urls', namespace='social')),
 ]
 
+from django.conf.urls.static import static
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
-]
+    ]
+
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

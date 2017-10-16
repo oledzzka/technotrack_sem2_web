@@ -22,3 +22,5 @@ class UserAdmin(BaseUserAdmin):
 
 
     admin_avatar.short_description = u'Аватар'
+
+admin.site.register(User.sub_users.through)

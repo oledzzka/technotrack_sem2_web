@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django.db.models.query import QuerySet
 from rest_framework import viewsets, permissions
 
 from core.permissions import IsOwnerOrReadOnly
@@ -14,8 +15,7 @@ class EventViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
 
     def get_queryset(self):
-        qs = []
-        for event in super(EventViewSet, self).get_queryset().all():
-            # if event.author in self.request.user.sub_users.all():
-               qs.append(event)
-        return {Event: qs}
+        if self.request.query_params.get('user_id'):
+            return super(EventViewSet, self).get_queryset().all().filter(author__in=self.request.user.sub_users.all())
+        else:
+            return None

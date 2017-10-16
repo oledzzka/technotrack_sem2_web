@@ -10,7 +10,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
     objects_count = models.IntegerField(default=0)
-    sub_users = models.ManyToManyField('self', symmetrical=False)
+    sub_users = models.ManyToManyField('self', symmetrical=False, related_name='on_sub_me')
 
     class Meta:
         verbose_name = 'Пользователь'

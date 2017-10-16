@@ -17,11 +17,4 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     def get_queryset(self):
-        qs = super(CommentViewSet, self).get_queryset()
-        if self.request.query_params.get('user_id'):
-            qs = qs.filter(author__id=self.request.query_params.get('user_id'))
-            if len(qs) != 0 and qs.all()[0].author not in self.request.user.subscriptions.all():
-                qs = None
-        else:
-            qs = super(CommentViewSet, self).get_queryset().filter(author=self.request.user)
-        return qs
+        return super(CommentViewSet, self).get_queryset().filter(author=self.request.user)

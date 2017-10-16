@@ -17,9 +17,8 @@ class PostViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         qs = super(PostViewSet, self).get_queryset()
         if self.request.query_params.get('user_id'):
-            qs = qs.filter(author__id=self.request.query_params.get('user_id'))
-            if len(qs) != 0 and qs.all()[0].author not in self.request.user.subscriptions.all():
-                qs = None
+            qs = qs.filter(author__id=self.request.query_params.get('user_id')).\
+                filter(author__in=self.request.user.sub_users.all())
         else:
             qs = super(PostViewSet, self).get_queryset().filter(author=self.request.user)
         return qs

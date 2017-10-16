@@ -1,13 +1,24 @@
 from rest_framework import serializers
+
+from core.models import User
 from post.models import Post
 
 
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['avatar', 'first_name', 'last_name', 'username']
+
+
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source='author.id')
+    author = AuthorSerializer(read_only=True)
     created = serializers.ReadOnlyField()
     updated = serializers.ReadOnlyField()
+    id = serializers.ReadOnlyField()
+    likes_count = serializers.ReadOnlyField()
+    photo = serializers.Base
 
     class Meta:
         model = Post
-        fields = ('author', 'title', 'created', 'updated', 'photo')
+        fields = ('author', 'title', 'created', 'updated', 'photo', 'id', 'likes_count')
 
