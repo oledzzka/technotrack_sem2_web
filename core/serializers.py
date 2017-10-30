@@ -21,13 +21,13 @@ class OtherUserSerializer(serializers.ModelSerializer):
 
 
 class SelfUserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = '__all__'
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User.sub_users.through
-        fields = '__all__'
+        fields = 'id', 'to_user'

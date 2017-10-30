@@ -27,9 +27,12 @@ class OtherUserViewSet(viewsets.ReadOnlyModelViewSet):
         return qs
 
 
-class SubscriptionsViewSet(viewsets.ReadOnlyModelViewSet):
+class SubscriptionsViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionSerializer
     queryset = User.sub_users.through.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(from_user=self.request.user)
 
     def get_queryset(self):
         return super(SubscriptionsViewSet, self).get_queryset().filter(from_user_id=self.request.user.id)
