@@ -1,4 +1,5 @@
 *.pyc
 .idea
 media/
-node_module/
+node_modules/
+static/

@@ -1,9 +1,20 @@
 import React from 'react';
 import Post from './Post';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import {loadPosts} from '../actions/posts';
+import apiUrls from "../constants/apiUrls";
+import {bindActionCreators} from "redux";
 
 
 class PostList extends React.Component {
+
+    componentDidMount = () => {
+        if (!this.props.isLoaded){
+            this.props.loadPosts(apiUrls.posts);
+        }
+    };
+
     render() {
         const load_src = require("../images/load.gif");
         if (this.props.isLoading) {
@@ -11,8 +22,7 @@ class PostList extends React.Component {
         }
         const posts = this.props.postList.map(
             item => {
-                return (<Post key = {item.id} owner= {item.author}
-                        title = {item.title} photo = {item.photo} likes = {item.likes_count}/>);
+                return (<Post key = {item} id={ item }/>);
 
             });
 
@@ -23,25 +33,31 @@ class PostList extends React.Component {
         );
     }
 }
-//
-// PostList.propTypes = {
-//     postList: PropTypes.arrayOf(PropTypes.shape({
-//         id: PropTypes.number.isRequired,
-//         owner : PropTypes.shape({
-//             first_name: PropTypes.string.isRequired,
-//             last_name: PropTypes.string.isRequired,
-//             user_name: PropTypes.string.isRequired,
-//             avatar: PropTypes.string,
-//         }),
-//         photo: PropTypes.string,
-//         likes_count: PropTypes.number.isRequired
-//     })),
-//     isLoading: PropTypes.bool,
-// };
+
+
+PostList.propTypes = {
+    postList: PropTypes.arrayOf(PropTypes.number),
+    isLoading: PropTypes.bool,
+    loadPosts: PropTypes.func.isRequired,
+};
 
 PostList.defaultProps= {
-    PostList: [],
+    postList: [],
     isLoading: false,
 };
 
-export default PostList;
+
+const mapStateToProps = ({posts}) => {
+    return {
+        postList: posts.postList,
+        isLoading: posts.isLoading,
+        isLoaded: posts.isLoaded,
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({loadPosts}, dispatch)
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostList);
+

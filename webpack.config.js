@@ -24,11 +24,11 @@ module.exports = {
 
         module: {
             rules:[
-                {
-                    test: /\.(js|jsx)$/,
-                    include: `${__dirname}/static_src`,
-                    loader: 'babel-loader?presets[]=react&presets[]=es2015&presets[]=stage-1',
-                },
+            {
+                test: /\.(js|jsx)$/,
+                include: `${__dirname}/static_src`,
+                loader: 'babel-loader?presets[]=react&presets[]=es2015&presets[]=stage-1',
+            },
             {
                 test: /\.css$/,
                 loader: 'style-loader!css-loader',

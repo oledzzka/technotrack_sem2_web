@@ -7,7 +7,7 @@ from post.models import Post
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['avatar', 'first_name', 'last_name', 'username']
+        fields = ['avatar', 'first_name', 'last_name', 'username', 'id']
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -16,7 +16,6 @@ class PostSerializer(serializers.ModelSerializer):
     updated = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     likes_count = serializers.ReadOnlyField()
-    photo = serializers.Base
 
     class Meta:
         model = Post

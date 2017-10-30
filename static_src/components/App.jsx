@@ -1,37 +1,21 @@
 import React from 'react';
-import MyPage from './MyPage'
-import Layout from "./Layout";
+import {Switch, Route} from 'react-router-dom';
 import '../styles/base.scss';
-import currentPage from '../constants/currentPage';
-
+import PostList from "./PostList";
+import PostForm from "./PostForm";
+import MyPage from "../page/MyPage";
 
 class App extends React.Component {
-    state = {
-        currentPage: currentPage.myPage,
-    };
-
-    onLayoutSelect = (e) => {
-        this.setState({ currentPage: e.target.name });
-    };
 
     render() {
-        let childPage;
-        switch (this.state.currentPage) {
-            case currentPage.feedPage:
-                childPage = <h1>FEEEEEEED</h1>;
-                break;
-            case currentPage.myPage:
-                childPage =  <MyPage />;
-                break;
-            default:
-                childPage = <h1>NO profilePage</h1>;
-                break;
-        }
         return (
-            <div className="b-wrapper">
-                <h1>Посты</h1>
-                <Layout child={ childPage } onSelect={ this.onLayoutSelect }/>
-            </div>
+            <Switch>
+                <Route exact path="/" component={ () => <h2>Start</h2> }/>
+                <Route exact path="/index/create" render={ (props) => <PostForm { ...props } />}/>
+                <Route exact path="/index/postlist" component={ PostList }/>
+                <Route exact path="/index/mypage" component={ MyPage }/>
+            </Switch>
+
         )
     }
 }

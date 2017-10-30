@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import apiUrls from '../constants/apiUrls';
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {setDataToServer} from "../actions/common";
 
 
 class PostForm extends React.Component {
 
-    state = {
-        title: '',
-        photo: '',
-        isLoading: false,
-    };
+     state = {
+         title: '',
+         photo: '',
+     };
 
     onChange = (e) => {
         if (e.target.name === "photo"){
@@ -17,8 +19,6 @@ class PostForm extends React.Component {
             let reader = new FileReader();
             let photo = e.target.files[0];
             let key = e.target.name;
-            console.log(photo);
-            console.log(reader.result);
             if (photo){
                 reader.onloadend = () => {
                     this.setState({
@@ -35,27 +35,7 @@ class PostForm extends React.Component {
 
     onClick = (e) => {
         e.preventDefault();
-        console.log(this.state);
-        console.log(JSON.stringify(this.state));
-        if (this.state.isLoading) {
-            return;
-        }
-        this.setState({ isLoading: true });
-        fetch(apiUrls.posts, {
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify(this.state),
-            headers: {
-                'content-type': 'application/json',
-            }
-        }).then(
-            body => body.json(),
-        ).then(
-            (json) => {
-                this.setState({ isLoading: false });
-                return this.props.onCreate(json);
-            },
-        )
+        this.props.setDataToServer(apiUrls.posts, JSON.stringify(this.state));
     };
 
 
@@ -67,10 +47,10 @@ class PostForm extends React.Component {
           $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
         }
         return (
-            <div className="b-create-form">
+            <div>
                 <h2>Форма добавления</h2>
                 <form>
-                    <div className="b-form-field-wrapper">
+                    <div>
                         <input onChange={ this.onChange } value={ this.state.title } className="b-form-field"
                                type="text" name="title" placeholder="Заголовок"/>
                     </div>
@@ -85,9 +65,16 @@ class PostForm extends React.Component {
     }
 }
 
-
-PostForm.propTypes = {
-    onCreate: PropTypes.func.isRequired,
+PostForm.propTypes={
+    setDataToServer: PropTypes.func,
 };
 
-export default PostForm;
+const mapStateToProps = () => {
+    return {}
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({setDataToServer}, dispatch)
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostForm);

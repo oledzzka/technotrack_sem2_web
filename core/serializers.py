@@ -14,7 +14,6 @@ class OtherUserSerializer(serializers.ModelSerializer):
     first_name = serializers.ReadOnlyField()
     last_name = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
-    avatar = serializers.ReadOnlyField()
 
     class Meta:
         model = User

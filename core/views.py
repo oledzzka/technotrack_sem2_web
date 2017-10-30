@@ -32,7 +32,6 @@ class SubscriptionsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.sub_users.through.objects.all()
 
     def get_queryset(self):
-        print self.request.user.sub_users.all()
         return super(SubscriptionsViewSet, self).get_queryset().filter(from_user_id=self.request.user.id)
 
 
