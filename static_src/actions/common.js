@@ -21,7 +21,7 @@ export const getFromServer = (url, schema, types=[START_GET_FROM_SERVER,
                         return getJSON(res).then(
                             (json) => {
                                 console.log(json);
-                                const normalizeData = normalize(json, [schema]);
+                                const normalizeData = normalize(json, schema);
                                 return Object.assign({}, normalizeData);
                             },
                         );
@@ -38,29 +38,36 @@ export const START_SETTING_TO_SERVER = 'START_SETTING_TO_SERVER';
 export const SUCCESS_SETTING_TO_SERVER = 'SUCCESS_SETTING_TO_SERVER';
 export const ERROR_SETTING_TO_SERVER = 'ERROR_SETTING_TO_SERVER';
 
-export const setDataToServer = (url, data) => {
+export const setDataToServer = (url, data, schema,  types=[START_SETTING_TO_SERVER,
+                                            SUCCESS_SETTING_TO_SERVER,
+                                            ERROR_SETTING_TO_SERVER],
+                                content_type = 'application/json') => {
     console.log('postPublishing');
+    const header_dict = {
+        'X-CSRFToken': document.cookie.match(/csrftoken=([^ ;]+)/)[1]
+    };
+
+    if (content_type) {
+        header_dict['content-type'] = content_type;
+    }
     return {
         [CALL_API]: {
             credentials: 'include',
             endpoint: url,
             method: 'POST',
             body: data,
-            headers: {
-                'content-type': 'application/json',
-                'X-CSRFToken': document.cookie.match(/csrftoken=([^ ;]+)/)[1],
-            },
+            headers: header_dict,
             types: [
-                START_SETTING_TO_SERVER,
+                types[0],
                 {
-                    type: SUCCESS_SETTING_TO_SERVER,
+                    type: types[1],
                     payload: (action, state, res) => {
                         return getJSON(res).then(
-                            (json) => normalize(json, [post]),
+                            (json) => normalize(json, schema),
                         );
                     },
                 },
-                ERROR_SETTING_TO_SERVER,
+                types[2],
             ],
         },
     };

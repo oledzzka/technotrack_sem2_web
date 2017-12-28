@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import apiUrls from '../constants/apiUrls';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {setDataToServer} from "../actions/common";
+import {setPost} from "../actions/posts";
 
 
 class PostForm extends React.Component {
@@ -11,6 +11,7 @@ class PostForm extends React.Component {
      state = {
          title: '',
          photo: '',
+         photo1: '',
      };
 
     onChange = (e) => {
@@ -18,6 +19,7 @@ class PostForm extends React.Component {
             e.preventDefault();
             let reader = new FileReader();
             let photo = e.target.files[0];
+            this.state.photo1 = e.target.files[0];
             let key = e.target.name;
             if (photo){
                 reader.onloadend = () => {
@@ -35,11 +37,20 @@ class PostForm extends React.Component {
 
     onClick = (e) => {
         e.preventDefault();
-        this.props.setDataToServer(apiUrls.posts, JSON.stringify(this.state));
+        let data = new FormData();
+        for (let key in this.state) {
+            if (key === "photo") {
+                data.append('type', 'file');
+                data.append('photo', this.state.photo1);
+            } else {
+                data.append(key, JSON.stringify(this.state[key]));
+            }
+        }
+        this.props.setPost(apiUrls.posts, data);
     };
 
 
-    render() {
+    render(){
         let $imagePreview = null;
         if (this.state.photo) {
           $imagePreview = (<img src={this.state.photo} />);
@@ -66,7 +77,7 @@ class PostForm extends React.Component {
 }
 
 PostForm.propTypes={
-    setDataToServer: PropTypes.func,
+    setPost: PropTypes.func,
 };
 
 const mapStateToProps = () => {
@@ -74,7 +85,7 @@ const mapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({setDataToServer}, dispatch)
+    return bindActionCreators({setPost}, dispatch)
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostForm);

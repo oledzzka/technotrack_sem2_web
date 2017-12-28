@@ -29,6 +29,23 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
+# Internationalization
+# https://docs.djangoproject.com/en/1.11/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+ADMINS = (
+    ("oledzzka@mail.ru", "Buslovskiy Oleg")
+)
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,8 +62,19 @@ INSTALLED_APPS = [
     'post.apps.PostConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'social_django'
+    'social_django',
+    'templated_email'
 ]
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+EMAIL_PORT = 1025
+EMAIL_EXTRAS_GNUPG_ENCODING = 'utf-8'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -115,18 +143,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -173,3 +189,14 @@ LOGIN_REDIRECT_URL = '/api/user'
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+##HAYSTACK
+INSTALLED_APPS += ('haystack', )
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
+
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

@@ -1,4 +1,7 @@
 # Create your views here.
+from django.http.response import JsonResponse
+from haystack.inputs import AutoQuery
+from haystack.query import SearchQuerySet
 from rest_framework import viewsets, permissions
 
 from core.permissions import IsOwnerOrReadOnly
@@ -21,4 +24,10 @@ class PostViewSet(viewsets.ModelViewSet):
                 filter(author__in=self.request.user.sub_users.all())
         else:
             qs = super(PostViewSet, self).get_queryset().filter(author=self.request.user)
-        return qs
+        query = self.request.query_params.get('query')
+        if query:
+            sqs = SearchQuerySet().models(Post).filter(title=AutoQuery(query))
+            results = [r.pk for r in sqs]
+            qs = qs.filter(pk__in=results)
+            return qs
+        return qs.order_by("-created")

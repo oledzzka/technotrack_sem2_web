@@ -27,7 +27,8 @@ class SelfUserSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
+    from_user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = User.sub_users.through
-        fields = 'id', 'to_user'
+        fields = 'id','from_user', 'to_user'

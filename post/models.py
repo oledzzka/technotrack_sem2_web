@@ -16,7 +16,7 @@ def user_directory_path(instance, filename):
 
 class Post(ModelWithAuthor, ModelWithTime, LikeAble):
     title = models.CharField(max_length=50, default='')
-    photo = models.ImageField(upload_to=user_directory_path)
+    photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Пост'
