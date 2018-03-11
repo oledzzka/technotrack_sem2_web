@@ -18,9 +18,8 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     def get_queryset(self):
-        qs = super(PostViewSet, self).get_queryset()
         if self.request.query_params.get('user_id'):
-            qs = qs.filter(author__id=self.request.query_params.get('user_id')).\
+            qs = super(PostViewSet, self).get_queryset().filter(author__id=self.request.query_params.get('user_id')).\
                 filter(author__in=self.request.user.sub_users.all())
         else:
             qs = super(PostViewSet, self).get_queryset().filter(author=self.request.user)
@@ -30,4 +29,5 @@ class PostViewSet(viewsets.ModelViewSet):
             results = [r.pk for r in sqs]
             qs = qs.filter(pk__in=results)
             return qs
-        return qs.order_by("-created")
+        else:
+            return qs.order_by("-created")
